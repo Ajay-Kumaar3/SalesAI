@@ -65,11 +65,3 @@ DBMS_DA2/
 ├── database/           # SQL Schema & Triggers
 └── testing.md          # API Testing Documentation
 ```
-
----
-
-## License
-This project was developed for the DBMS DA2 assignment.
-
----
-**Developed by Antigravity**
