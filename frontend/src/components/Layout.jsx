@@ -37,7 +37,6 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex min-h-screen bg-slate-50/50">
-      {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-slate-100 flex flex-col fixed h-full">
         <div className="p-6">
           <h1 className="text-xl font-bold text-emerald-600 flex items-center gap-2">
@@ -64,7 +63,6 @@ const Layout = ({ children }) => {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 ml-64 p-8">
         <div className="max-w-6xl mx-auto">
           {children}

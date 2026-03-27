@@ -92,7 +92,6 @@ const Dashboard = () => {
         <p className="text-slate-500">Real-time business performance overview.</p>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <StatCard title="Total Customers" value={stats.customers} icon={Users} trend="up" trendValue="12" />
         <StatCard title="Total Products" value={stats.products} icon={Package} trend="up" trendValue="5" />
@@ -100,7 +99,6 @@ const Dashboard = () => {
         <StatCard title="Total Revenue" value={`$${stats.revenue.toLocaleString()}`} icon={TrendingUp} trend="up" trendValue="15" />
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="card h-96">
           <h2 className="text-lg font-bold text-slate-900 mb-6">Revenue Growth</h2>

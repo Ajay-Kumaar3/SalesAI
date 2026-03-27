@@ -2,7 +2,6 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Load environment variables from .env and .env.local
 dotenv.config();
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
@@ -19,7 +18,6 @@ async function generateBusinessInsights(logs) {
 
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-  // Compact logs to save tokens
   const compactLogs = logs.map(l => ({
     op: l.action_type,
     table: l.table_name,

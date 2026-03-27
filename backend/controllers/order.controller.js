@@ -24,7 +24,6 @@ exports.create = async (req, res) => {
   try {
     const { CustomerID, items } = req.body;
 
-    // items: [{ ProductID, Quantity, UnitPrice }]
     let totalAmount = 0;
     for (const item of items) {
       totalAmount += item.Quantity * item.UnitPrice;
@@ -40,7 +39,6 @@ exports.create = async (req, res) => {
         UnitPrice: item.UnitPrice
       }, { transaction: t });
 
-      // Update Stock (Optional, but good for DB Time Machine)
       const product = await Product.findByPk(item.ProductID);
       if (product) {
         await product.update({ StockQuantity: product.StockQuantity - item.Quantity }, { transaction: t });

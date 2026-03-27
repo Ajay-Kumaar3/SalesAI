@@ -5,7 +5,6 @@ const Order = require('./order.model');
 const OrderItem = require('./orderItem.model');
 const AuditLog = require('./auditLog.model');
 
-// Associations
 Customer.hasMany(Order, { foreignKey: 'CustomerID' });
 Order.belongsTo(Customer, { foreignKey: 'CustomerID' });
 

@@ -72,4 +72,4 @@ DBMS_DA2/
 This project was developed for the DBMS DA2 assignment.
 
 ---
-**Developed by Antigravity**
+

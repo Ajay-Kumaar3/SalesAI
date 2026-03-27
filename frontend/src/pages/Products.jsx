@@ -27,6 +27,18 @@ const Products = () => {
     p.Name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await productService.delete(id);
+        fetchProducts(); // Refresh the list
+      } catch (err) {
+        console.error('Failed to delete product:', err);
+        alert('Failed to delete product. It might be linked to existing orders.');
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -95,7 +107,10 @@ const Products = () => {
                     <button className="p-2 text-slate-400 hover:text-emerald-600 transition-colors">
                       <Edit2 size={18} />
                     </button>
-                    <button className="p-2 text-slate-400 hover:text-rose-600 transition-colors">
+                    <button 
+                      onClick={() => handleDelete(product.ProductID)}
+                      className="p-2 text-slate-400 hover:text-rose-600 transition-colors"
+                    >
                       <Trash2 size={18} />
                     </button>
                   </div>

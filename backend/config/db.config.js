@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
-// Load environment variables from .env or .env.local
+
 if (fs.existsSync('.env.local')) {
   dotenv.config({ path: '.env.local' });
 } else {
@@ -16,9 +16,9 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'mysql',
-    logging: false, // set to console.log to see raw SQL
+    logging: false,
     define: {
-      timestamps: false // already handled by triggers and model definitions
+      timestamps: false
     }
   }
 );

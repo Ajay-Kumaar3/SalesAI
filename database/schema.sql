@@ -1,13 +1,6 @@
--- -------------------------------------------------------------
--- Business Sales Analysis System - BCNF Schema & Audit Triggers
--- -------------------------------------------------------------
-
--- Create Database
 CREATE DATABASE IF NOT EXISTS sales_analysis_db;
 USE sales_analysis_db;
 
--- 1. Customers Table
--- BCNF: All non-trivial functional dependencies are from a superkey (CustomerID).
 CREATE TABLE IF NOT EXISTS Customers (
     CustomerID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
@@ -18,8 +11,6 @@ CREATE TABLE IF NOT EXISTS Customers (
     UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 2. Products Table
--- BCNF: All attributes depend solely on ProductID.
 CREATE TABLE IF NOT EXISTS Products (
     ProductID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
@@ -30,8 +21,6 @@ CREATE TABLE IF NOT EXISTS Products (
     UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 3. Orders Table
--- BCNF: OrderID is the only superkey for this relation.
 CREATE TABLE IF NOT EXISTS Orders (
     OrderID INT AUTO_INCREMENT PRIMARY KEY,
     CustomerID INT NOT NULL,
@@ -40,8 +29,6 @@ CREATE TABLE IF NOT EXISTS Orders (
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
 );
 
--- 4. Order_Items Table (Transaction Table)
--- BCNF: OrderItemID is the superkey.
 CREATE TABLE IF NOT EXISTS Order_Items (
     OrderItemID INT AUTO_INCREMENT PRIMARY KEY,
     OrderID INT NOT NULL,
@@ -52,8 +39,6 @@ CREATE TABLE IF NOT EXISTS Order_Items (
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE
 );
 
--- 5. Audit_Log Table (Mandatory)
--- BCNF: AuditID is the superkey.
 CREATE TABLE IF NOT EXISTS Audit_Log (
     AuditID INT AUTO_INCREMENT PRIMARY KEY,
     action_type ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
@@ -64,13 +49,8 @@ CREATE TABLE IF NOT EXISTS Audit_Log (
     new_value JSON
 );
 
--- -------------------------------------------------------------
--- SQL Triggers for Automatic Audit Logging
--- -------------------------------------------------------------
-
 DELIMITER //
 
--- CUSTOMERS TRIGGERS
 CREATE TRIGGER customers_after_insert
 AFTER INSERT ON Customers
 FOR EACH ROW
@@ -97,7 +77,6 @@ BEGIN
     VALUES ('DELETE', 'Customers', OLD.CustomerID, JSON_OBJECT('Name', OLD.Name, 'Email', OLD.Email, 'Phone', OLD.Phone, 'Address', OLD.Address));
 END //
 
--- PRODUCTS TRIGGERS
 CREATE TRIGGER products_after_insert
 AFTER INSERT ON Products
 FOR EACH ROW
@@ -124,7 +103,6 @@ BEGIN
     VALUES ('DELETE', 'Products', OLD.ProductID, JSON_OBJECT('Name', OLD.Name, 'Price', OLD.Price, 'Stock', OLD.StockQuantity));
 END //
 
--- ORDERS TRIGGERS
 CREATE TRIGGER orders_after_insert
 AFTER INSERT ON Orders
 FOR EACH ROW
