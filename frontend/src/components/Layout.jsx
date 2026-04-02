@@ -6,8 +6,10 @@ import {
   Package, 
   ShoppingCart, 
   History, 
-  Sparkles 
+  Sparkles,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from './AuthContext';
 
 const SidebarLink = ({ to, icon: Icon, label, active }) => (
   <Link
@@ -25,14 +27,15 @@ const SidebarLink = ({ to, icon: Icon, label, active }) => (
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const { logout } = useAuth();
 
   const menuItems = [
-    { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/customers', icon: Users, label: 'Customers' },
-    { to: '/products', icon: Package, label: 'Products' },
-    { to: '/orders', icon: ShoppingCart, label: 'Orders' },
-    { to: '/audit-logs', icon: History, label: 'Audit Logs' },
-    { to: '/ai-insights', icon: Sparkles, label: 'AI Insights' },
+    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/admin/customers', icon: Users, label: 'Customers' },
+    { to: '/admin/products', icon: Package, label: 'Products' },
+    { to: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
+    { to: '/admin/audit-logs', icon: History, label: 'Audit Logs' },
+    { to: '/admin/ai-insights', icon: Sparkles, label: 'AI Insights' },
   ];
 
   return (
@@ -60,6 +63,13 @@ const Layout = ({ children }) => {
             <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Plan</p>
             <p className="text-sm font-medium text-emerald-900">Premium Account</p>
           </div>
+          <button 
+            onClick={logout}
+            className="w-full mt-4 flex items-center gap-3 px-4 py-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-medium text-sm"
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 

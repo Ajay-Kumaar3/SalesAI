@@ -4,6 +4,7 @@ const Product = require('./product.model');
 const Order = require('./order.model');
 const OrderItem = require('./orderItem.model');
 const AuditLog = require('./auditLog.model');
+const User = require('./user.model');
 
 Customer.hasMany(Order, { foreignKey: 'CustomerID' });
 Order.belongsTo(Customer, { foreignKey: 'CustomerID' });
@@ -20,5 +21,6 @@ module.exports = {
   Order,
   OrderItem,
   AuditLog,
+  User,
   sequelize,
 };

@@ -11,6 +11,11 @@ const Product = sequelize.define('Product', {
     type: DataTypes.STRING,
     allow_null: false,
   },
+  Category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'General',
+  },
   Description: DataTypes.TEXT,
   Price: {
     type: DataTypes.DECIMAL(10, 2),
@@ -21,16 +26,20 @@ const Product = sequelize.define('Product', {
     allow_null: false,
     defaultValue: 0,
   },
-  CreatedAt: {
+  ImageURL: {
+    type: DataTypes.TEXT('long'),
+    allowNull: true,
+  },
+  createdat: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
-  UpdatedAt: {
+  updatedat: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'Products',
+  tableName: 'products',
   timestamps: false,
 });
 

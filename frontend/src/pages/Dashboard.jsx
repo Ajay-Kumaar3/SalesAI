@@ -21,7 +21,7 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import { customerService, productService, orderService } from '../services/api';
+import { analyticsService } from '../services/api';
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue }) => (
   <div className="card">
@@ -37,7 +37,7 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue }) => (
       )}
     </div>
     <h3 className="text-slate-500 text-sm font-medium">{title}</h3>
-    <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
+    <p className="text-2xl font-bold text-slate-900 mt-1">{value || 0}</p>
   </div>
 );
 
@@ -48,42 +48,33 @@ const Dashboard = () => {
     orders: 0,
     revenue: 0,
   });
+  const [revenueData, setRevenueData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const [c, p, o] = await Promise.all([
-          customerService.getAll(),
-          productService.getAll(),
-          orderService.getAll(),
+        setLoading(true);
+        const [statsRes, revenueRes, categoryRes] = await Promise.all([
+          analyticsService.getStats(),
+          analyticsService.getRevenue(),
+          analyticsService.getCategories(),
         ]);
         
-        const rev = Array.isArray(o.data) ? o.data.reduce((acc, curr) => acc + parseFloat(curr.TotalAmount || 0), 0) : 0;
-        
-        setStats({
-          customers: Array.isArray(c.data) ? c.data.length : 0,
-          products: Array.isArray(p.data) ? p.data.length : 0,
-          orders: Array.isArray(o.data) ? o.data.length : 0,
-          revenue: rev,
-        });
+        setStats(statsRes.data);
+        setRevenueData(revenueRes.data);
+        setCategoryData(categoryRes.data);
       } catch (err) {
-        console.error("Failed to fetch dashboard stats", err);
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
-  const data = [
-    { name: 'Jan', sales: 4000 },
-    { name: 'Feb', sales: 3000 },
-    { name: 'Mar', sales: 2000 },
-    { name: 'Apr', sales: 2780 },
-    { name: 'May', sales: 1890 },
-    { name: 'Jun', sales: 2390 },
-    { name: 'Jul', sales: 3490 },
-  ];
-
-  const COLORS = ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
+  const COLORS = ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#064e3b'];
 
   return (
     <div className="space-y-8">
@@ -96,21 +87,21 @@ const Dashboard = () => {
         <StatCard title="Total Customers" value={stats.customers} icon={Users} trend="up" trendValue="12" />
         <StatCard title="Total Products" value={stats.products} icon={Package} trend="up" trendValue="5" />
         <StatCard title="Total Orders" value={stats.orders} icon={ShoppingCart} trend="down" trendValue="2" />
-        <StatCard title="Total Revenue" value={`$${stats.revenue.toLocaleString()}`} icon={TrendingUp} trend="up" trendValue="15" />
+        <StatCard title="Total Revenue" value={`$${(stats.revenue || 0).toLocaleString()}`} icon={TrendingUp} trend="up" trendValue="15" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="card h-96">
-          <h2 className="text-lg font-bold text-slate-900 mb-6">Revenue Growth</h2>
+          <h2 className="text-lg font-bold text-slate-900 mb-6">Revenue Trends (Last 6 Months)</h2>
           <ResponsiveContainer width="100%" height="80%">
-            <LineChart data={data}>
+            <LineChart data={revenueData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
+              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
               <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
               <Tooltip 
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
-              <Line type="monotone" dataKey="sales" stroke="#10b981" strokeWidth={3} dot={false} />
+              <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} activeDot={{ r: 6 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -120,13 +111,14 @@ const Dashboard = () => {
           <ResponsiveContainer width="100%" height="80%">
             <PieChart>
               <Pie
-                data={data}
+                data={categoryData}
                 innerRadius={60}
                 outerRadius={80}
                 paddingAngle={5}
-                dataKey="sales"
+                dataKey="value"
+                nameKey="name"
               >
-                {data.map((entry, index) => (
+                {categoryData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

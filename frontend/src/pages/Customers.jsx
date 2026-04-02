@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Search } from 'lucide-react';
+import { Trash2, Edit2, Search } from 'lucide-react';
 import { customerService } from '../services/api';
 
 const Customers = () => {
@@ -47,10 +47,6 @@ const Customers = () => {
           <h1 className="text-2xl font-bold text-slate-900">Customers</h1>
           <p className="text-slate-500">Manage your client base and contact details.</p>
         </div>
-        <button className="btn-primary flex items-center gap-2">
-          <Plus size={18} />
-          <span>Add Customer</span>
-        </button>
       </div>
 
       <div className="card !p-0 overflow-hidden">

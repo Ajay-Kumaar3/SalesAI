@@ -35,4 +35,15 @@ export const aiService = {
   getInsights: () => api.get('/ai/insights'),
 };
 
+export const analyticsService = {
+  getStats: () => api.get('/analytics/stats'),
+  getRevenue: () => api.get('/analytics/revenue'),
+  getCategories: () => api.get('/analytics/categories'),
+};
+
+export const authService = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+};
+
 export default api;
