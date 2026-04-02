@@ -13,7 +13,12 @@ exports.getRevenueTrends = async (req, res) => {
        ORDER BY MIN(orderdate) ASC`,
       { type: QueryTypes.SELECT }
     );
-    res.json(data);
+    // Explicitly parse revenue as float for Recharts safety
+    const formattedData = data.map(item => ({
+      ...item,
+      revenue: parseFloat(item.revenue || 0)
+    }));
+    res.json(formattedData);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -27,10 +32,15 @@ exports.getCategoryDistribution = async (req, res) => {
         SUM(oi.quantity) as value 
        FROM order_items oi
        JOIN products p ON oi.productid = p.productid
-       GROUP BY name`,
+       GROUP BY p.category`,
       { type: QueryTypes.SELECT }
     );
-    res.json(data);
+    // Explicitly parse value as number for Recharts safety
+    const formattedData = data.map(item => ({
+      ...item,
+      value: parseInt(item.value || 0)
+    }));
+    res.json(formattedData);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -42,12 +52,12 @@ exports.getStats = async (req, res) => {
     const [totalProducts] = await sequelize.query("SELECT COUNT(*) as total FROM products", { type: QueryTypes.SELECT });
     const [totalOrders] = await sequelize.query("SELECT COUNT(*) as total FROM orders", { type: QueryTypes.SELECT });
     const [totalCustomers] = await sequelize.query("SELECT COUNT(*) as total FROM customers", { type: QueryTypes.SELECT });
-    
+
     res.json({
       revenue: parseFloat(totalRevenue.total || 0),
-      products: totalProducts.total || 0,
-      orders: totalOrders.total || 0,
-      customers: totalCustomers.total || 0
+      products: parseInt(totalProducts.total || 0),
+      orders: parseInt(totalOrders.total || 0),
+      customers: parseInt(totalCustomers.total || 0),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
